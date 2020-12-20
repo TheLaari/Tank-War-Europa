@@ -1,4 +1,4 @@
 # Tank War Europa
-It is the year 2007. The Warszaw Pact forces have overrun the Fulda Gap and are now headed towards Bonn. You as a Panzer commander are to stop them.
+It is the year 2007. Warszaw Pact forces have overrun the Fulda Gap and are now headed towards Bonn. You are a Panzer commander poised to stop them.
 
-Vector-graphics tank shooter inspired by the works of William Gibson and Introversion Games, in Deutsche.
+Vector-graphics arcade tank shooter inspired by the works of William Gibson and Introversion Games.
