@@ -12,7 +12,7 @@ namespace Panzer
     {
 
         public City(double width, double height, Shape shape, double x = 0, double y = 0)
-        : base(width, height, shape, x, y)
+        : base(width, height, shape, x, y)//syy
         {
 
         }

@@ -11,55 +11,59 @@ namespace Panzer
 {
     public class Tank_War_Europa : PhysicsGame
     {
-        int kenttaNro = 1;
-        const int RUUDUN_KOKO = 400;
+
+        #region Muuttujat
+
+        private int kenttaNro = 1;
+        private const int RUUDUN_KOKO = 400;
         const double Nopeus = 200;
-        Image leoVaunu = LoadImage("leo");
-        Image challengerVaunu = LoadImage("challenger");
-        Image amxVaunu = LoadImage("amx");
-        Image omaTorni = LoadImage("leo_torni");
-        Image tausta = LoadImage("grid");
-        Image menutausta = LoadImage("PanzerWarTausta2");
-        Image vihollisVaunu = LoadImage("punakone");
-        SoundEffect nappi = LoadSoundEffect("nappi");
-        Vaunu vihollinen;
+        readonly Image leoVaunu = LoadImage("leo");
+        readonly Image challengerVaunu = LoadImage("challenger");
+        readonly Image amxVaunu = LoadImage("amx");
+        readonly Image omaTorni = LoadImage("leo_torni");
+        readonly Image tausta = LoadImage("grid");
+        readonly Image menutausta = LoadImage("PanzerWarTausta2");
+        readonly Image vihollisVaunu = LoadImage("punakone");
+        readonly SoundEffect nappi = LoadSoundEffect("nappi");
+        private Ydinase pelaajanNuke;
+        private Panssarikanuuna pelaajanTykki;
+        private Ohjus pelaajanOhjus;
 
-        Ydinase pelaajanNuke;
-        Panssarikanuuna pelaajanTykki;
-        Ohjus pelaajanOhjus;
-
-        ScoreList topLista = new ScoreList(10, false, 0);
+        private ScoreList topLista = new ScoreList(10, false, 0);
         string[] johtajat = new string[10];
-
-        Vaunu pelaaja;
+        private Vaunu pelaaja;
+        private Vaunu vihollinen;
         //PhysicsObject omatorni;
 
+        private int PISTEET = 0;
+        private Label pistenaytto;
+
+        #endregion
 
         public override void Begin()
         {
-
-            // Kirjoita ohjelmakoodisi tähän
+            //Ladataan pelin alkuvalikko
             Alkuvalikko();
         }
 
         private void AmmuTykilla(Panssarikanuuna tykki)
         {
-            PhysicsObject kranu = tykki.Shoot();
+            tykki.Shoot();
         }
 
         private void AmmuOhjus(Ohjus atgm)
         {
-            PhysicsObject raketti = atgm.Shoot();
+            atgm.Shoot();
         }
 
         private void AmmuYdinpommi(Ydinase nuke)
         {
-            PhysicsObject joukkotuhoase = nuke.Shoot();
+            nuke.Shoot();
         }
 
         private void AmmuVihuaseella(VihuKanuuna vihutykki)
         {
-            PhysicsObject vihollisase = vihutykki.Shoot();
+            vihutykki.Shoot();
         }
 
         public void LisaaAseet()
@@ -70,6 +74,15 @@ namespace Panzer
             pelaaja.Add(pelaajanOhjus);
             pelaaja.Add(pelaajanTykki);
             pelaaja.Add(pelaajanNuke);
+        }
+
+        public void PelinStartti()
+        {
+            LisaaNappaimet();
+            LuoKentta(kenttaNro);
+            Camera.Follow(pelaaja);
+            Camera.ZoomFactor = 0.7;
+            Camera.StayInLevel = true;
         }
 
         public void AloitaLeopard()
@@ -89,12 +102,9 @@ namespace Panzer
             //omatorni = LisaaOmaTorni();
 
             //AxleJoint omaliitos = new AxleJoint(pelaaja, omatorni);
-            LisaaNappaimet();
-            LuoKentta(kenttaNro);
-            Camera.Follow(pelaaja);
-            Camera.ZoomFactor = 0.7;
-            Camera.StayInLevel = true;
+            PelinStartti();
         }
+
 
         public void AloitaChallenger()
         {
@@ -108,12 +118,9 @@ namespace Panzer
 
 
             //AxleJoint omaliitos = new AxleJoint(pelaaja, omatorni);
-            LisaaNappaimet();
-            LuoKentta(kenttaNro);
-            Camera.Follow(pelaaja);
-            Camera.ZoomFactor = 0.7;
-            Camera.StayInLevel = true;
+            PelinStartti();
         }
+
 
         public void AloitaAmx()
         {
@@ -125,12 +132,9 @@ namespace Panzer
             LisaaAseet();
             //omatorni = LisaaOmaTorni();
             //AxleJoint omaliitos = new AxleJoint(pelaaja, omatorni);
-            LisaaNappaimet();
-            LuoKentta(kenttaNro);
-            Camera.Follow(pelaaja);
-            Camera.ZoomFactor = 0.3;
-            Camera.StayInLevel = true;
+            PelinStartti();
         }
+
 
         //TODO
         /*
@@ -144,6 +148,7 @@ namespace Panzer
          -äänet menuun TEHTY
          -vaunuluokat (raskas, kevyt, välimalli) TEHTY, PITÄÄ REFAKTOROIDA
         */
+
 
         public void Alkuvalikko()
         {
@@ -160,6 +165,7 @@ namespace Panzer
                                                  // "Die Beste Panzerkommandanten",
             IsPaused = true;
         }
+
 
         public void Vaunuvalikko()
         {
@@ -184,11 +190,12 @@ namespace Panzer
             pelaaja.Angle = Angle.FromDegrees(-90);
             pelaaja.Image = leoVaunu;
             pelaaja.CollisionIgnoreGroup = 1;
-            pelaaja.Tag = "pelaaja";
+            pelaaja.Tag = pelaaja;
             //pelaaja.Mass = 65;
             Add(pelaaja);
             return pelaaja;
         }
+
 
         public Vaunu LisaaChallenger()
         {
@@ -199,7 +206,7 @@ namespace Panzer
             pelaaja.Angle = Angle.FromDegrees(-90);
             pelaaja.Image = challengerVaunu;
             pelaaja.CollisionIgnoreGroup = 1;
-            pelaaja.Tag = "pelaaja";
+            pelaaja.Tag = pelaaja;
             //pelaaja.Mass = 65;
             Add(pelaaja);
             return pelaaja;
@@ -215,7 +222,7 @@ namespace Panzer
             pelaaja.Angle = Angle.FromDegrees(-90);
             pelaaja.Image = amxVaunu;
             pelaaja.CollisionIgnoreGroup = 1;
-            pelaaja.Tag = "pelaaja";
+            pelaaja.Tag = pelaaja;
             //pelaaja.Mass = 65;
             Add(pelaaja);
             return pelaaja;
@@ -235,8 +242,9 @@ namespace Panzer
         //    return torni;
         //}
 
-        public Vaunu LisaaVihollinen(int vihunumero)
+        public Vaunu LisaaVihollinen()
         {
+
             Vaunu vihollinen = new Vaunu(100, 200, 1, 99);
             vihollinen.Shape = Shape.Rectangle;
             Random randomY = new Random();
@@ -249,7 +257,8 @@ namespace Panzer
             vihollinen.Image = vihollisVaunu;
             vihollinen.CollisionIgnoreGroup = 2;
             vihollinen.Add(t55Ase);
-            vihollinen.Tag = "vihollinen";
+            vihollinen.Tag = ("vihollinen");
+
             FollowerBrain vihuaivot = new FollowerBrain(pelaaja);
             vihollinen.Brain = vihuaivot;
             vihuaivot.DistanceClose = 500;
@@ -283,6 +292,7 @@ namespace Panzer
 
         }
 
+
         void LuoKentta(int kenttaNro)
         {
             //TileMap kentta = TileMap.FromLevelAsset(kenttaNro.ToString());
@@ -291,31 +301,26 @@ namespace Panzer
             Level.Size = new Vector(1920, 10000);
             Level.CreateBorders();
             Level.Background.Image = tausta;
-            List<int> vihut = new List<int>();
             for (int i = 1; i < 10; i++)
             {
-                vihut.Add(i);
+                LisaaVihollinen();
+                LisaaKaupunki();
             }
-            for (int i = 0; i < 9; i++)
-            {
-                LisaaVihollinen(vihut[i]);
-            }
-            LisaaKaupunki();
-            
         }
+
 
         public City LisaaKaupunki()
         {
             City kaupunki = new City(100, 100, Shape.Rectangle, 750, 8000);
-            Random random = new Random();
             Add(kaupunki);
             return kaupunki;
         }
 
+
         void LisaaNappaimet()
         {
-            Keyboard.Listen(Key.F1, ButtonState.Pressed, ShowControlHelp, "Anweisungen anzeigen");
-            Keyboard.Listen(Key.Escape, ButtonState.Pressed, Alkuvalikko, "Zurück zum Hauptmenü");
+            Keyboard.Listen(Key.Escape, ButtonState.Pressed, ShowControlHelp, "Anweisungen anzeigen");
+            Keyboard.Listen(Key.Home, ButtonState.Pressed, Alkuvalikko, "Zurück zum Hauptmenü");
 
             Keyboard.Listen(Key.S, ButtonState.Down,
             LiikutaPelaajaa, "Vorwärts", pelaaja, -700.0);
@@ -327,7 +332,7 @@ namespace Panzer
               KaannaPelaajaa, "Linke", pelaaja, 4.0);
             Keyboard.Listen(Key.G, ButtonState.Down, AmmuTykilla, "Kampfwagenkanone", pelaajanTykki);
             Keyboard.Listen(Key.Space, ButtonState.Down, AmmuOhjus, "Panzerabwehrlenkrakete", pelaajanOhjus);
-            Keyboard.Listen(Key.F, ButtonState.Down, AmmuYdinpommi, "Panzerabwehrlenkrakete", pelaajanNuke);
+            Keyboard.Listen(Key.F, ButtonState.Down, AmmuYdinpommi, "Kernwaffe", pelaajanNuke);
 
 
             //Keyboard.Listen(Key.Right, ButtonState.Down,
@@ -337,6 +342,7 @@ namespace Panzer
 
             PhoneBackButton.Listen(ConfirmExit, "Beenden Sie sofort");
         }
+
 
         void VaihdaAse()
         {
@@ -352,11 +358,13 @@ namespace Panzer
             pelihahmo.MaxVelocity = 450;
         }
 
+
         void KaannaPelaajaa(PhysicsObject vaunu, double nopeus)
         {
             vaunu.AngularVelocity = nopeus;
             vaunu.AngularDamping = 0.7;
         }
+
 
         //Implementoin pyörivät tornit jos ehdin
         void Pyorita(PhysicsObject pelaaja, int torniNopeus)
@@ -365,37 +373,77 @@ namespace Panzer
             pelaaja.LinearDamping = 0.8;
         }
 
-        void AmmusOsui(Panssarikanuuna ammus, Vaunu kohde)
+        private void AmmusOsui(Panssarikanuuna ammus, Vaunu kohde)
         {
             ammus.Destroy();
             kohde.HP--;
+            
             if (kohde.HP == 0)
             {
                 kohde.Destroy();
-                if (kohde.Tag == "pelaaja")
+                if (kohde.Tag == pelaaja)
                 {
-                    PelaajaKuolema();//vaihda PelaajaKuolema()
+                    PelaajaKuolema(topLista);//vaihda PelaajaKuolema()
                 }
-                if (kohde.Tag == "vihollinen")
+                if (kohde.Tag == vihollinen)
                 {
                     kohde.Destroy();
                 }
             }
         }
 
+
+        void OhjusOsui(Ohjus ammus, Vaunu kohde, int vihunumero)
+        {
+            ammus.Destroy();
+            kohde.HP--;
+            if (kohde.HP == 0)
+            {
+                kohde.Destroy();
+                if (kohde.Tag == pelaaja)
+                {
+                    PelaajaKuolema(topLista);//vaihda PelaajaKuolema()
+                }
+                if (kohde.Tag == vihollinen)
+                {
+                    kohde.Destroy();
+                    PISTEET += 100;
+                }
+            }
+        }
+
+
         void NukeOsui(Ydinase ammus, City kohde)
         {
             ammus.Destroy();
             kohde.Destroy();
+            PISTEET += 1000;
         }
 
-        void PelaajaKuolema()
+        void PelaajaKuolema(ScoreList lista)
         {
             pelaaja.Destroy();
             ClearAll();
             Alkuvalikko();
-            //topLista.EnterAndShow(pisteLaskuri.Value); // Lisää pistelaskuri
-            //topLista.HighScoreWindow.Closed += AloitaLeopard;
+            //topLista.Add(pisteLaskuri.Value); // Lisää pistelaskuri
+        }
+
+
+        public void LuoRahalaskuri()
+        {
+            IntMeter pojolaskuri = new IntMeter(PISTEET);
+
+            pistenaytto = new Label
+            {
+                X = Screen.Left + 100,
+                Y = Screen.Top - 100,
+                TextColor = Color.White,
+                Color = Color.Black
+            };
+            pistenaytto.BindTo(pojolaskuri);
+            pistenaytto.Title = ("Credits");
+
+            Add(pistenaytto);
         }
 
 

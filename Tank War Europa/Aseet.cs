@@ -9,7 +9,7 @@ using Jypeli.Effects;
 
 namespace Panzer
 {
-    public class Panssarikanuuna : Weapon
+    public class Panssarikanuuna : PlasmaCannon
     {
         public Panssarikanuuna(double width, double height)
             : base(width, height)
@@ -29,7 +29,6 @@ namespace Panzer
             TimeBetweenUse = TimeSpan.FromSeconds(2);
             Angle = Angle.FromDegrees(90);
             AttackSound = Game.LoadSoundEffect("omakanuuna");
-            AddCollisionHandler(apfsdp);
             Add(apfsdp);
             return apfsdp;
         }
@@ -65,7 +64,6 @@ namespace Panzer
             : base(width, height)
         {
             CreateProjectile();
-            
         }
 
         protected override PhysicsObject CreateProjectile()
@@ -75,7 +73,8 @@ namespace Panzer
             TimeBetweenUse = TimeSpan.FromSeconds(10);
             PhysicsObject missile = new PhysicsObject(new RaySegment(Vector.Zero, Vector.UnitX, 10));
             missile.Color = Color.Azure;
-            FollowerBrain ohjuksenAivot = new FollowerBrain("vihollinen");
+            FollowerBrain ohjuksenAivot = new FollowerBrain();
+            
             AmmoIgnoresGravity = false;
             Power.DefaultValue = 100;
             Angle = Angle.FromDegrees(90);
