@@ -383,7 +383,7 @@ namespace Panzer
                 kohde.Destroy();
                 if (kohde.Tag == pelaaja)
                 {
-                    PelaajaKuolema(topLista);//vaihda PelaajaKuolema()
+                    PelaajaKuolema();//vaihda PelaajaKuolema()
                 }
                 if (kohde.Tag == vihollinen)
                 {
@@ -393,7 +393,7 @@ namespace Panzer
         }
 
 
-        void OhjusOsui(Ohjus ammus, Vaunu kohde, int vihunumero)
+        public void OhjusOsui(Ohjus ammus, Vaunu kohde)
         {
             ammus.Destroy();
             kohde.HP--;
@@ -402,7 +402,7 @@ namespace Panzer
                 kohde.Destroy();
                 if (kohde.Tag == pelaaja)
                 {
-                    PelaajaKuolema(topLista);//vaihda PelaajaKuolema()
+                    PelaajaKuolema();//vaihda PelaajaKuolema()
                 }
                 if (kohde.Tag == vihollinen)
                 {
@@ -413,19 +413,30 @@ namespace Panzer
         }
 
 
-        void NukeOsui(Ydinase ammus, City kohde)
+void NukeOsui(Ydinase ammus, Vaunu kohde, Vaunu pelaaja, Vaunu vihollinen)
         {
             ammus.Destroy();
-            kohde.Destroy();
-            PISTEET += 1000;
+            kohde.HP--;
+            if (kohde.HP == 0)
+            {
+                kohde.Destroy();
+                if (kohde.Tag == pelaaja)
+                {
+                    PelaajaKuolema();//vaihda PelaajaKuolema()
+                }
+                if (kohde.Tag == vihollinen)
+                {
+                    kohde.Destroy();
+                    PISTEET += 1000;
+                }
+            }
         }
 
-        void PelaajaKuolema(ScoreList lista)
+        public void PelaajaKuolema()
         {
             pelaaja.Destroy();
             ClearAll();
             Alkuvalikko();
-            //topLista.Add(pisteLaskuri.Value); // Lisää pistelaskuri
         }
 
 
